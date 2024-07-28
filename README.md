@@ -22,4 +22,6 @@ Ensure you have the following installed on your system:
     Navigate to the BlogApp directory and open VS code 
     Install the dependencies: npm install
     Run the application: ng serve
-    
+
+## Output     
+![image](https://github.com/user-attachments/assets/fd459485-174a-4c79-8a26-871e82e5488e)
