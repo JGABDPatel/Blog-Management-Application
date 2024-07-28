@@ -1,0 +1,23 @@
+<!-- src/app/blog-post-form/blog-post-form.component.html -->
+<div class="card mb-3">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <input formControlName="username" class="form-control" placeholder="Username" required>
+          <div *ngIf="form.get('username')?.touched && form.get('username')?.invalid" class="text-danger">
+            <div *ngIf="form.get('username')?.errors?.['required']">Username is required.</div>            
+          </div>
+        </div>
+        <div class="mb-3">
+          <textarea formControlName="text" class="form-control" placeholder="Text" required></textarea>
+          <div *ngIf="form.get('text')?.touched && form.get('text')?.invalid" class="text-danger">
+            <div *ngIf="form.get('text')?.errors?.['required']">Text is required.</div>            
+          </div>
+        </div>
+        <div style="float:right;">
+          <button type="submit" class="btn btn-success btn-space" [disabled]="form.invalid">{{ post?.id === 0 ? 'Save' : 'Update' }}</button>
+          <button type="button" class="btn btn-secondary ml-2" (click)="onCancel()">Cancel</button>
+        </div>        
+      </form>
+    </div>
+  </div>
