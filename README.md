@@ -18,20 +18,12 @@ Ensure you have the following installed on your system:
 
 ### Frontend (Angular)     
     Navigate to the BlogApp directory and open the VS code 
-    Install Dependencies:
-           npm install
-    Run the application:
-           ng serve
-    Open in Browser:
-           Open your browser and navigate to http://localhost:4200.  
+    Install Dependencies: npm install
+    Run the application: ng serve
+    Open in Browser: Open your browser and navigate to http://localhost:4200.  
 
-## Design Decisions and Application Structure
+## Design and Application Structure
 
-### Backend
-     Controllers: Handle HTTP requests and return appropriate responses.
-     Services: Business logic is encapsulated here, providing a clear separation of concerns.
-     Repositories: Abstract the data access layer, interacting with the database using Entity Framework Core.
-     
 ### API Endpoints
     GET /api/blogposts: Get all blog posts with pagination and filtering.
     POST /api/blogposts: Create a new blog post.
@@ -43,7 +35,7 @@ Ensure you have the following installed on your system:
     Services: Handle HTTP requests and interact with the backend API.
     State Management: Managed using RxJS for reactive programming.
     Form Handling: Utilized Angular Reactive Forms for robust form management and validation.
-    UI: Designed with Bootstrap for responsive and modern user interface.
+    UI: Designed with Bootstrap for a responsive and modern user interface.
 
 ### Key Components
     BlogPostsComponent: Displays a list of blog posts in a table with pagination and filtering.
