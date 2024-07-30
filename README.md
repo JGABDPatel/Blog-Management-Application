@@ -50,6 +50,25 @@ Ensure you have the following installed on your system:
     Filtering: Allows users to search for specific blog posts.
     Toastr Notifications: Provides user feedback for successful and failed operations.
 
+## Current Design Scalability Features
+
+### Server-Side Pagination:
+The current design implements server-side pagination, which reduces the amount of data sent to the client. This ensures that the application can handle large datasets efficiently by only loading a subset of data at a time.
+
+### Filtering:
+The server-side filtering allows users to search and retrieve only the relevant data, reducing the load on both the server and client. This makes the application responsive and efficient even with a large number of blog posts.
+
+### Repository Pattern:
+The use of the repository pattern abstracts the data access layer, making it easier to optimize and scale the data access code. This separation of concerns also facilitates better maintainability and testing.
+
+### Angular Reactive Forms:
+The use of Angular Reactive Forms for form handling allows for better performance and scalability as it provides more control over the form data and its validation.
+
+## Potential Scalability Enhancements
+
+## Asynchronous Processing: 
+Implement asynchronous processing for heavy tasks that do not require immediate responses. This can be achieved using background processing libraries like Hangfire for .NET Core.
+
 ## Output     
 ![image](https://github.com/user-attachments/assets/73f814a7-49d8-4eb9-9634-c6af390bb597)
 ![image](https://github.com/user-attachments/assets/dbc99462-bb0f-417b-8643-84dbbb034eb1)
