@@ -1,8 +1,7 @@
 ﻿using APIs.Abstraction;
 using APIs.Models;
-using APIs.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIs.Controllers
 {
@@ -15,13 +14,30 @@ namespace APIs.Controllers
         public BlogPostController(IBlogPostRepository repository)
         {
             _repository = repository;
-        }
+        } 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BlogPost>>> Get()
-        {
+        public async Task<ActionResult<IEnumerable<BlogPost>>> Get([FromQuery] string search = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
+        { 
             var blogPosts = await _repository.GetAllAsync();
-            return Ok(blogPosts);
+            if (blogPosts == null)
+                return NotFound();
+            if (!string.IsNullOrEmpty(search))
+            {
+                blogPosts = blogPosts.Where(post => post.Username.ToLower().Contains(search) || post.Text.ToLower().Contains(search)).ToList();
+            }
+
+            var totalItems = blogPosts.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+             
+            var response = new PaginatedResponse<BlogPost>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                Data = blogPosts.Skip((page - 1) * pageSize).Take(pageSize)
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -82,4 +98,4 @@ namespace APIs.Controllers
         }
     }
 }
- 
+
