@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BlogPost } from '../models/blog-post.model';
@@ -14,10 +14,15 @@ export class BlogPostService {
 
   constructor(private http: HttpClient) {}
 
-  getBlogPosts(): void {
-    this.http.get<BlogPost[]>(this.apiUrl).pipe(
-      tap(posts => this.blogPostsSubject.next(posts))
-    ).subscribe();
+  getBlogPosts(search: string = '', page: number = 1, pageSize: number = 10): Observable<any> {
+    let params = new HttpParams();
+    if (search) {
+      params = params.append('search', search);
+    }
+    params = params.append('page', page.toString());
+    params = params.append('pageSize', pageSize.toString());
+
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
   createBlogPost(post: BlogPost): Observable<BlogPost> {

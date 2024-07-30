@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { BlogPostService } from '../services/blog-post.service';
 import { BlogPost } from '../models/blog-post.model';
-import { ToastrService } from 'ngx-toastr';
+import { BlogPostFormComponent } from '../blog-post-form/blog-post-form.component';
 
 @Component({
   selector: 'app-blog-posts',
@@ -10,50 +12,90 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class BlogPostsComponent implements OnInit {
   blogPosts: BlogPost[] = [];
-  editingPost: BlogPost | null = null;
+  currentPage = 1;
+  pageSize = 5;
+  totalItems = 0;
+  totalPages = 0;
+  search = '';
 
-  constructor(private blogPostService: BlogPostService, private toastr: ToastrService) {}
+  constructor(
+    private blogPostService: BlogPostService,
+    private toastr: ToastrService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    this.blogPostService.blogPosts$.subscribe(posts => {
-      this.blogPosts = posts;
-    });
-    this.blogPostService.getBlogPosts();
-  }
-  
-  startNewPost(): void {
-    this.editingPost = { id: 0, username: '', dateCreated: new Date(), text: '' };
+    this.loadBlogPosts();
   }
 
-  createPost(post: BlogPost): void {
-    this.blogPostService.createBlogPost(post).subscribe(
-      (res) => {
-      this.toastr.success('Blog post created successfully');},
-      (err) => {
+  loadBlogPosts(search: string = '', page: number = 1): void { 
+    this.blogPostService.getBlogPosts(search, page, this.pageSize).subscribe({
+      next: (response) => {
+        this.blogPosts = response.data;
+        this.totalItems = response.totalItems;
+        this.totalPages = response.totalPages;
+        this.currentPage = page;
+      },
+      error: () => {
+        this.toastr.error('Failed to load blog posts');
+      }
+    });
+  }
+
+  applyFilter(event: Event): void { 
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.loadBlogPosts(filterValue.toLocaleLowerCase());
+  } 
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.loadBlogPosts(this.search, page);
+  } 
+
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(BlogPostFormComponent, {
+      width: '500px',
+      data: { id: 0, username: '', dateCreated: new Date(), text: '' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.blogPostService.createBlogPost(result).subscribe(() => {
+          this.loadBlogPosts();
+          this.toastr.success('Blog post created successfully');
+        },(err) => {
+          this.toastr.error(err.error);
+        });
+      }
+    });
+  }
+
+  openEditDialog(post: BlogPost): void {
+    const dialogRef = this.dialog.open(BlogPostFormComponent, {
+      width: '500px',
+      data: post
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.blogPostService.updateBlogPost(result).subscribe(() => {
+          this.loadBlogPosts();
+          this.toastr.success('Blog post updated successfully');
+        },(err) => {
+          this.toastr.error(err.error);
+        });
+      }
+    });
+  }
+
+  deleteBlogPost(id: number): void {
+    this.blogPostService.deleteBlogPost(id).subscribe(() => {
+      this.loadBlogPosts();
+      this.toastr.success('Blog post deleted successfully');
+    },(err) => {
       this.toastr.error(err.error);
-    });
-  }
-
-  editPost(post: BlogPost): void {
-    this.editingPost = { ...post };
-  }
-
-  updatePost(post: BlogPost): void {
-    this.blogPostService.updateBlogPost(post).subscribe(
-      () => {
-      this.editingPost = null;
-      this.toastr.success('Blog post updated successfully');},
-      (err) => {
-      this.toastr.error(err.error);
-    });
-  }
-
-  deletePost(id: number): void {
-    this.blogPostService.deleteBlogPost(id).subscribe(
-      () => {
-      this.toastr.success('Blog post deleted successfully');},
-      (err) => {
-        this.toastr.error(err.error);
     });
   }
 }

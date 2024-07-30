@@ -1,21 +1,44 @@
-<div class="container mt-4">
-  <button class="btn btn-primary mb-4" (click)="startNewPost()">New</button>
-
-  <app-blog-post-form *ngIf="editingPost" [post]="editingPost" (save)="createPost($event)" (update)="updatePost($event)"
-    (cancel)="editingPost = null">
-  </app-blog-post-form>
-
-  <div *ngFor="let post of blogPosts" class="card mb-3">
-    <div class="card-body">
-      <p>
-        <b>Username:</b> {{ post.username }}<br>
-        <b>Posted Text:</b> {{ post.text }}<br>
-        <b>Created date:</b> {{ post.dateCreated | date:'short' }}
-      </p>
-      <div style="float:right;">
-        <button class="btn btn-secondary btn-space" (click)="editPost(post)">Edit</button>
-        <button class="btn btn-danger" (click)="deletePost(post.id)">Delete</button>
-      </div>
-    </div>
+<div class="container mt-5">
+  <div class="d-flex justify-content-between mb-3">
+    <button class="btn btn-primary" (click)="openAddDialog()">Add Blog Post</button>
+    <input type="text" class="form-control w-20" placeholder="Search" (keyup)="applyFilter($event)" />
   </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th width="10%">Username</th>
+        <th width="15%">Date Created</th>
+        <th width="55%">Text</th>
+        <th width="20%">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="!blogPosts || blogPosts.length === 0">
+        <td colspan="4" class="text-center">No Blog Posts Found</td>
+      </tr>
+      <tr *ngFor="let post of blogPosts">
+        <td>{{ post.username }}</td>
+        <td>{{ post.dateCreated | date }}</td>
+        <td>{{ post.text }}</td>
+        <td>
+          <button class="btn btn-success btn-space" (click)="openEditDialog(post)">Edit</button>
+          <button class="btn btn-danger" (click)="deleteBlogPost(post.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav *ngIf="totalPages > 1">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+      </li>
+      <li class="page-item" [class.active]="page === currentPage"
+        *ngFor="let page of [].constructor(totalPages); let i = index">
+        <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
 </div>
