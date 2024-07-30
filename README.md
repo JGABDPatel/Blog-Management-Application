@@ -19,9 +19,12 @@ Ensure you have the following installed on your system:
 
 ### Frontend Setup
      
-    Navigate to the BlogApp directory and open VS code 
+    Navigate to the BlogApp directory and open the VS code 
     Install the dependencies: npm install
     Run the application: ng serve
 
 ## Output     
-![image](https://github.com/user-attachments/assets/fd459485-174a-4c79-8a26-871e82e5488e)
+![image](https://github.com/user-attachments/assets/73f814a7-49d8-4eb9-9634-c6af390bb597)
+![image](https://github.com/user-attachments/assets/dbc99462-bb0f-417b-8643-84dbbb034eb1)
+
+
